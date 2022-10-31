@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Printing;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace Labb3Bordsbokning
         List<string> comboTimeLista = new List<string>() { "Välj en tid...", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00" };
         List<string> comboBordLista = new List<string>() { "Välj ett bord...", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
 
-        public List<Bokning> SparadeBokningarLista = new List<Bokning>();
+        public List<Bokning> sparadeBokningarLista = new List<Bokning>();
 
 
         public MainWindow()
@@ -53,8 +54,15 @@ namespace Labb3Bordsbokning
 
             Bokning resultBokning = bokningar.SparaBokning(resultDag, resultBord);
 
-            SparadeBokningarLista.Add(resultBokning);
+            sparadeBokningarLista.Add(resultBokning);
 
+        }
+
+        private void CancelTheBoking(string listboxDatum, string listboxTid, string listboxNamn, int listBoxBordNummer)
+        {
+            var result = sparadeBokningarLista.Where(item => item.dag.datum == listboxDatum && item.dag.tid == listboxTid && item.bord.namn == listboxNamn && item.bord.nummer == listBoxBordNummer).First();
+
+            sparadeBokningarLista.Remove(result);
         }
 
         private void ClearFields()
@@ -67,7 +75,7 @@ namespace Labb3Bordsbokning
 
         private void DisplayContent()
         {
-            foreach(var bokning in SparadeBokningarLista)
+            foreach(var bokning in sparadeBokningarLista)
             {
                 string outputDatum = bokning.dag.datum.ToString();
                 string outputTid = bokning.dag.tid.ToString();
@@ -96,6 +104,25 @@ namespace Labb3Bordsbokning
         private void Button_Click_VisaBokningar(object sender, RoutedEventArgs e)
         {
             LB_Bokningar.Items.Clear();
+            ClearFields();
+
+            DisplayContent();
+        }
+
+        private void Button_Click_RaderaBokningar(object sender, RoutedEventArgs e)
+        {
+            var result = LB_Bokningar.SelectedItem.ToString().Split(',');
+
+            string listboxDatum = result[0].Trim();
+            string listboxTid = result[1].Trim();
+            string listboxNamn = result[2].Trim();
+            int listBoxBordNummer = int.Parse(result[3].Substring(5).Trim());
+
+            CancelTheBoking(listboxDatum, listboxTid, listboxNamn, listBoxBordNummer);
+
+            LB_Bokningar.Items.Clear();
+
+            MessageBox.Show("Din bokning är nu raderat.");
             ClearFields();
 
             DisplayContent();
