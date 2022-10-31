@@ -9,11 +9,31 @@ namespace Labb3Bordsbokning
     public class BokningsDag
     {
         public string datum { get; private set; }
-        public List<string> bokadTidList = new List<string>();
+        public string tid { get; private set; }
 
-        public BokningsDag(string datum)
+        List<Dag> listaAvBokadeDagar = new List<Dag>();
+
+        public BokningsDag(string kundDatum, string kundTid)
         {
-            this.datum = datum;
+            this.datum = kundDatum;
+            this.tid = kundTid;
+        }
+
+        public Dag SparaDennaBokningDag(string kundDatum, string kundTid)
+        {
+            Dag dag = new Dag();
+            dag.datum = kundDatum;
+            dag.tid = kundTid;
+
+            listaAvBokadeDagar.Add(dag);
+            return dag;
+
+        }
+
+        public struct Dag
+        {
+            public string datum;
+            public string tid;
         }
     }
 }

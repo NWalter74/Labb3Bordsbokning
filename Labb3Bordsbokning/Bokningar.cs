@@ -3,12 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Labb3Bordsbokning.BokningsDag;
 
 namespace Labb3Bordsbokning
 {
     public class Bokningar
     {
-        BokningsDag bokningsDag { get; set; }
-        BokningsBord bokningsBord { get; set; }
+        public Bokningar(BokningsDag.Dag dag, BokningsBord.Bord bord)
+        {
+            this.dag = dag;
+            this.bord = bord;
+        }
+
+        BokningsDag.Dag dag { get; set; }
+        BokningsBord.Bord bord { get; set; }
+
+        List<Bokning> SparadeBokningarLista = new List<Bokning>();
+
+        public void SparaBokning(BokningsDag.Dag resultDag, BokningsBord.Bord resultBord)
+        {
+            Bokning bokning = new Bokning();
+            bokning.dag = resultDag;
+            bokning.bord = resultBord;
+
+            SparadeBokningarLista.Add(bokning);
+        }
+
+        public struct Bokning
+        {
+            public BokningsDag.Dag dag;
+            public BokningsBord.Bord bord;
+        }
     }
 }
