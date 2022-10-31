@@ -18,15 +18,14 @@ namespace Labb3Bordsbokning
         BokningsDag.Dag dag { get; set; }
         BokningsBord.Bord bord { get; set; }
 
-        List<Bokning> SparadeBokningarLista = new List<Bokning>();
 
-        public void SparaBokning(BokningsDag.Dag resultDag, BokningsBord.Bord resultBord)
+        public Bokning SparaBokning(BokningsDag.Dag resultDag, BokningsBord.Bord resultBord)
         {
             Bokning bokning = new Bokning();
             bokning.dag = resultDag;
             bokning.bord = resultBord;
 
-            SparadeBokningarLista.Add(bokning);
+            return bokning;
         }
 
         public struct Bokning

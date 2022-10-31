@@ -37,7 +37,7 @@
 
         <Button Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="50,40,0,0" VerticalAlignment="Top" Width="150" Height="30" Click="Button_Click_SparaBokning">Boka</Button>
 
-        <Button Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="50,40,0,0" VerticalAlignment="Top" Width="150" Height="30">Visa bokningar</Button>
+        <Button Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="50,40,0,0" VerticalAlignment="Top" Width="150" Height="30" Click="Button_Click_VisaBokningar">Visa bokningar</Button>
 
         <Button Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="50,40,0,0" VerticalAlignment="Top" Width="150" Height="30">Avboka</Button>
 
