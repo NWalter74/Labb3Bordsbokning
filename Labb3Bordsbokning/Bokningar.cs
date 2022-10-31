@@ -8,6 +8,7 @@ namespace Labb3Bordsbokning
 {
     public class Bokningar
     {
-        
+        BokningsDag bokningsDag { get; set; }
+        BokningsBord bokningsBord { get; set; }
     }
 }

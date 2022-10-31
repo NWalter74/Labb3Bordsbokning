@@ -20,9 +20,18 @@ namespace Labb3Bordsbokning
     /// </summary>
     public partial class MainWindow : Window
     {
+        public List<string> comboTimeList = new List<string>() { "Välj en tid...", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00" };
+        public List<string> comboBordList = new List<string>() { "Välj ett bord...", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+
+
         public MainWindow()
         {
+
             InitializeComponent();
+
+            CBox_Time.ItemsSource = comboTimeList;
+            CBox_Table.ItemsSource = comboBordList;
+                
         }
     }
 }
