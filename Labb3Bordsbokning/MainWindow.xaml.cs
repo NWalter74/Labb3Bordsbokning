@@ -42,9 +42,9 @@ namespace Labb3Bordsbokning
 
         private void DoTheBoking(string inputDatum, string inputTid, int inputBordNummer, string inputNamn)
         {
-            BokningsDag dag = new BokningsDag(inputDatum, inputTid);
+            BokningsDagar dag = new BokningsDagar(inputDatum, inputTid);
 
-            BokningsDag.Dag resultDag = dag.SparaDennaBokningDag(inputDatum, inputTid);
+            BokningsDagar.Dag resultDag = dag.SparaDennaBokningDag(inputDatum, inputTid);
 
             BokningsBord bord = new BokningsBord(inputBordNummer, inputNamn);
 

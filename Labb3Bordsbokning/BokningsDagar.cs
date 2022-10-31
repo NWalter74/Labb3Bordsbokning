@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Labb3Bordsbokning
 {
-    public class BokningsDag
+    public class BokningsDagar
     {
         public string datum { get; private set; }
         public string tid { get; private set; }
 
         List<Dag> listaAvBokadeDagar = new List<Dag>();
 
-        public BokningsDag(string kundDatum, string kundTid)
+        public BokningsDagar(string kundDatum, string kundTid)
         {
             this.datum = kundDatum;
             this.tid = kundTid;
