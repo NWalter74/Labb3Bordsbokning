@@ -18,7 +18,7 @@ namespace Labb3Bordsbokning
         BokningsDagar.Dag dag { get; set; }
         BokningsBord.Bord bord { get; set; }
 
-        public Bokning SparaBokning(BokningsDagar.Dag resultDag, BokningsBord.Bord resultBord)
+        public Bokning SaveBoking(BokningsDagar.Dag resultDag, BokningsBord.Bord resultBord)
         {
             Bokning bokning = new Bokning();
             bokning.dag = resultDag;

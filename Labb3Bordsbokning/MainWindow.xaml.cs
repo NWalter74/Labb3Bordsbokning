@@ -4,6 +4,7 @@ using System.Linq;
 using System.Printing;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,44 +28,81 @@ namespace Labb3Bordsbokning
         List<string> comboTimeLista = new List<string>() { "Välj en tid...", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00" };
         List<string> comboBordLista = new List<string>() { "Välj ett bord...", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
 
+        //En lista för alla sparade bokningar
         public List<Bokning> sparadeBokningarLista = new List<Bokning>();
 
+        //TODO: har jag med iteration och selektion? krav 11 och 12 G
+        //TODO: endast 5 bord ska tillåtas vara bokade samma datum och tid krav 13 VG
+        //TODO: abstrakta klasser eller interface krav 15 VG
+        //TODO: Filhantering uppdatera fil vid bokning och avbokning samt läsa från fil vid valet ”Visa bokningar” krav 16 VG
+        //TODO: Asyncrona metoder krav 17 VG
 
         public MainWindow()
         {
 
             InitializeComponent();
-
+            
+            //Fyll Comboboxar
             CBox_Time.ItemsSource = comboTimeLista;
             CBox_Table.ItemsSource = comboBordLista;
-                
+
+            //Skapa exempeldata
+            //Krav[6]
+            DoTheBoking("2022-10-14", "17:00", 1, "Kalle");
+            DoTheBoking("2022-10-22", "16:00", 4, "Inez");
+            DoTheBoking("2022-10-30", "18:00", 10, "Otto");
+
+            DisplayContent();
+
         }
 
+        /// <summary>
+        /// Denna metod genomför själva bokningen
+        /// </summary>
+        /// <param name="inputDatum"></param>
+        /// <param name="inputTid"></param>
+        /// <param name="inputBordNummer"></param>
+        /// <param name="inputNamn"></param>
         private void DoTheBoking(string inputDatum, string inputTid, int inputBordNummer, string inputNamn)
         {
             BokningsDagar dag = new BokningsDagar(inputDatum, inputTid);
 
-            BokningsDagar.Dag resultDag = dag.SparaDennaBokningDag(inputDatum, inputTid);
+            //Skicka in datum och tid användaren valde i dialogen till klassen Dag för att spara denna dag med sin tid i en lista
+            BokningsDagar.Dag resultDag = dag.SaveThisBokingDay(inputDatum, inputTid);
 
             BokningsBord bord = new BokningsBord(inputBordNummer, inputNamn);
 
-            BokningsBord.Bord resultBord = bord.SparaDennaBord(inputBordNummer, inputNamn);
+            //Skicka in bordnummer och namn användaren valde i dialogen till klassen Bord för att spara detta bord med sitt nummer och kundens namn i en lista
+            BokningsBord.Bord resultBord = bord.SaveThisTable(inputBordNummer, inputNamn);
 
             Bokningar bokningar = new Bokningar(resultDag, resultBord);
 
-            Bokning resultBokning = bokningar.SparaBokning(resultDag, resultBord);
+            //Skicka dag och bord till klassen Bokningar
+            Bokning resultBokning = bokningar.SaveBoking(resultDag, resultBord);
 
+            //Lägg till bokningen i en lista
             sparadeBokningarLista.Add(resultBokning);
 
         }
 
+        /// <summary>
+        /// Denna metod radera en vald bokning
+        /// </summary>
+        /// <param name="listboxDatum"></param>
+        /// <param name="listboxTid"></param>
+        /// <param name="listboxNamn"></param>
+        /// <param name="listBoxBordNummer"></param>
         private void CancelTheBoking(string listboxDatum, string listboxTid, string listboxNamn, int listBoxBordNummer)
         {
+            //Krav[14]
             var result = sparadeBokningarLista.Where(item => item.dag.datum == listboxDatum && item.dag.tid == listboxTid && item.bord.namn == listboxNamn && item.bord.nummer == listBoxBordNummer).First();
 
             sparadeBokningarLista.Remove(result);
         }
 
+        /// <summary>
+        /// Denna metod tömmer all innehåll i inmatningsfälten
+        /// </summary>
         private void ClearFields()
         {
             MyDatePicker.Text = "";
@@ -73,6 +111,9 @@ namespace Labb3Bordsbokning
             CBox_Table.Text = "";
         }
 
+        /// <summary>
+        /// Metoden visa all data i listboxen
+        /// </summary>
         private void DisplayContent()
         {
             foreach(var bokning in sparadeBokningarLista)
@@ -87,21 +128,68 @@ namespace Labb3Bordsbokning
 
         }
 
-        private void Button_Click_SparaBokning(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Metoden körs efter knappen "Boka" klickades och kollar även om den bokningen som ska göras redan finns
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Click_SaveBoking(object sender, RoutedEventArgs e)
         {
-            string inputDatum = MyDatePicker.SelectedDate.Value.ToShortDateString().ToString();
-            string inputTid = CBox_Time.Text;
-            int inputBordNummer = int.Parse(CBox_Table.Text);
-            string inputNamn = TBox_Name.Text;
+            //Krav [1]
+            string inputDatum = "";
+            string inputTid = "";
+            int inputBordNummer = 0;
+            string inputNamn = "";
 
-            DoTheBoking(inputDatum, inputTid, inputBordNummer, inputNamn);
+            //Krav[7] och [8]
+            try
+            {
+                inputDatum = MyDatePicker.SelectedDate.Value.ToShortDateString().ToString();
+                inputTid = CBox_Time.Text;
+                inputBordNummer = int.Parse(CBox_Table.Text);
 
-            MessageBox.Show("Din bokning är nu sparat.");
+                //Krav[7]
+                //TODO: Varför funkar inte regex här
+                //if (!Regex.Match(TBox_Name.Text, "^[A-Z][a-zA-Z]*$").Success)
+                //{
+                //    //name was incorrect
+                //    MessageBox.Show("Detta är inget namn. Vänligen mata in ett rikigt namn.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
+                //    return;
+                //}
 
-            ClearFields();
+                inputNamn = TBox_Name.Text;
+
+                //Krav[14]
+                var result = sparadeBokningarLista.Where(item => item.dag.datum == inputDatum && item.dag.tid == inputTid && item.bord.nummer == inputBordNummer).ToList();
+
+                //Krav [2] och [3]
+                if (result.Count != 0)
+                {
+                    MessageBox.Show("Denna dag och tid är detta bord redan bokat.");
+                }
+                else
+                {
+                    DoTheBoking(inputDatum, inputTid, inputBordNummer, inputNamn);
+
+                    MessageBox.Show("Din bokning är nu sparat.");
+
+                    ClearFields();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("OBS! Något gick fel. Vänligen kontrollera dina inmatningar!", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        private void Button_Click_VisaBokningar(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Denna metod körs efter knappen "Visa bokningar" klickade och kallar på metoden DisplayContent()
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        
+        // Krav[4]
+        private void Button_Click_ShowBokings(object sender, RoutedEventArgs e)
         {
             LB_Bokningar.Items.Clear();
             ClearFields();
@@ -109,7 +197,14 @@ namespace Labb3Bordsbokning
             DisplayContent();
         }
 
-        private void Button_Click_RaderaBokningar(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Metoden körs efter knappen "Avboka" klickades och kör sedan metoden CancelTheBoking()
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+        // Krav[5]
+        private void Button_Click_CancelBoking(object sender, RoutedEventArgs e)
         {
             var result = LB_Bokningar.SelectedItem.ToString().Split(',');
 

@@ -20,8 +20,9 @@ namespace Labb3Bordsbokning
             this.kundNamn = kundNamn;
         }
 
-        public void RaderaDettaBord(string listboxNamn, int listboxBordNummer)
+        public void CancelThisBord(string listboxNamn, int listboxBordNummer)
         {
+            //Krav[14]
             var result = listaAvBokadeBord.Where(item => item.namn == listboxNamn && item.nummer == listboxBordNummer);
             
             if (result != null)
@@ -30,7 +31,7 @@ namespace Labb3Bordsbokning
             }
         }
 
-        public Bord SparaDennaBord(int kundBordNo, string kundNamn)
+        public Bord SaveThisTable(int kundBordNo, string kundNamn)
         {
             Bord bord = new Bord();
             bord.nummer = kundBordNo;

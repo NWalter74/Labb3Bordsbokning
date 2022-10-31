@@ -19,8 +19,9 @@ namespace Labb3Bordsbokning
             this.tid = kundTid;
         }
 
-        public void RaderaDennaDag(string listboxDatum, string listboxTid)
+        public void CancelThisDay(string listboxDatum, string listboxTid)
         {
+            //Krav[14]
             var result = listaAvBokadeDagar.Where(item => item.datum == listboxDatum && item.tid == listboxTid);
 
             if (result != null)
@@ -29,7 +30,7 @@ namespace Labb3Bordsbokning
             }
         }
 
-        public Dag SparaDennaBokningDag(string kundDatum, string kundTid)
+        public Dag SaveThisBokingDay(string kundDatum, string kundTid)
         {
             Dag dag = new Dag();
             dag.datum = kundDatum;
