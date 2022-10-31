@@ -50,13 +50,18 @@ namespace Labb3Bordsbokning
         {
             BokningsTid tid = new BokningsTid(bokningsTid);
 
-            //take table number and name to method for boking a table
+            //Say to the objekt time to bok a table for you
             tid.BokingATable(bokningsBordNo, bokningNamn);
 
             BokningsDag dag = new BokningsDag(bokningsDatum);
 
-            //take time to method for boking this table we choosed now
             dag.BokingOfTime(tid);
+
+            //Say to the objekt day to bok a time for you
+            //if (dag.BokingOfTime(tid) == false)
+            //{
+            //    MessageBox.Show("Denna tid är redan bokat.");
+            //}
 
             //save day in list of bokings
             listaAvBokningsdagar.Add(dag);
@@ -65,6 +70,8 @@ namespace Labb3Bordsbokning
         private void CancelTheBoking(string datum, string tid, string namn, int bordNummer)
         {
             var result = listaAvBokningsdagar.Where(item => item.datum == datum).First();
+
+            //Go to the day of boking in your calender and say to the day to cancel the boking
             result.CancelTime(tid, namn, bordNummer);
         }
 
