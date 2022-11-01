@@ -12,7 +12,7 @@ namespace Labb3Bordsbokning
         public int bordNo { get; private set; }
         public string kundNamn { get; private set; }
 
-        List<Bord> listaAvBokadeBord = new List<Bord>();
+        private List<Bord> listaAvBokadeBord = new List<Bord>();
 
         public BokningsBord(int bordNo, string kundNamn)
         {
@@ -20,16 +20,16 @@ namespace Labb3Bordsbokning
             this.kundNamn = kundNamn;
         }
 
-        public void CancelThisBord(string listboxNamn, int listboxBordNummer)
-        {
-            //Krav[14]
-            var result = listaAvBokadeBord.Where(item => item.namn == listboxNamn && item.nummer == listboxBordNummer);
+        //private void CancelThisBord(string listboxNamn, int listboxBordNummer)
+        //{
+        //    //Krav[14]
+        //    var result = listaAvBokadeBord.Where(item => item.namn == listboxNamn && item.nummer == listboxBordNummer);
             
-            if (result != null)
-            {
-                listaAvBokadeBord.Remove(result.First());
-            }
-        }
+        //    if (result != null)
+        //    {
+        //        listaAvBokadeBord.Remove(result.First());
+        //    }
+        //}
 
         public Bord SaveThisTable(int kundBordNo, string kundNamn)
         {

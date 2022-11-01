@@ -11,7 +11,7 @@ namespace Labb3Bordsbokning
         public string datum { get; private set; }
         public string tid { get; private set; }
 
-        List<Dag> listaAvBokadeDagar = new List<Dag>();
+        private List<Dag> listaAvBokadeDagar = new List<Dag>();
 
         public BokningsDagar(string kundDatum, string kundTid)
         {
@@ -19,16 +19,16 @@ namespace Labb3Bordsbokning
             this.tid = kundTid;
         }
 
-        public void CancelThisDay(string listboxDatum, string listboxTid)
-        {
-            //Krav[14]
-            var result = listaAvBokadeDagar.Where(item => item.datum == listboxDatum && item.tid == listboxTid);
+        //private void CancelThisDay(string listboxDatum, string listboxTid)
+        //{
+        //    //Krav[14]
+        //    var result = listaAvBokadeDagar.Where(item => item.datum == listboxDatum && item.tid == listboxTid);
 
-            if (result != null)
-            {
-                listaAvBokadeDagar.Remove(result.First());
-            }
-        }
+        //    if (result != null)
+        //    {
+        //        listaAvBokadeDagar.Remove(result.First());
+        //    }
+        //}
 
         public Dag SaveThisBokingDay(string kundDatum, string kundTid)
         {

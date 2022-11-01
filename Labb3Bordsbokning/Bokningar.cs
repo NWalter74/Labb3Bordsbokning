@@ -31,6 +31,7 @@ namespace Labb3Bordsbokning
         {
             public BokningsDagar.Dag dag;
             public BokningsBord.Bord bord;
+
         }
     }
 }

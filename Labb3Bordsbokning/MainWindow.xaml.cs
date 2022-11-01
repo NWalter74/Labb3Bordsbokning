@@ -25,8 +25,8 @@ namespace Labb3Bordsbokning
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<string> comboTimeLista = new List<string>() { "Välj en tid...", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00" };
-        List<string> comboBordLista = new List<string>() { "Välj ett bord...", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+        private List<string> comboTimeLista = new List<string>() { "Välj en tid...", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00" };
+        private List<string> comboBordLista = new List<string>() { "Välj ett bord...", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
 
         //En lista för alla sparade bokningar
         public List<Bokning> sparadeBokningarLista = new List<Bokning>();
@@ -159,19 +159,27 @@ namespace Labb3Bordsbokning
 
                 inputNamn = TBox_Name.Text;
 
-                //Krav[14]
-                var result = sparadeBokningarLista.Where(item => item.dag.datum == inputDatum && item.dag.tid == inputTid && item.bord.nummer == inputBordNummer).ToList();
+                bool ärBokat = false;
+
+                //Krav[11]
+                foreach(var bokning in sparadeBokningarLista)
+                {
+                    if(bokning.dag.datum == inputDatum && bokning.dag.tid == inputTid && bokning.bord.nummer == inputBordNummer)
+                    {
+                        ärBokat = true;
+                    }
+                }
 
                 //Krav [2] och [3]
-                if (result.Count != 0)
+                if (ärBokat == true)
                 {
-                    MessageBox.Show("Denna dag och tid är detta bord redan bokat.");
+                    MessageBox.Show("Denna dag och tid är detta bord redan bokat.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 else
                 {
                     DoTheBoking(inputDatum, inputTid, inputBordNummer, inputNamn);
 
-                    MessageBox.Show("Din bokning är nu sparat.");
+                    MessageBox.Show("Din bokning är nu sparat.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     ClearFields();
                 }
@@ -217,7 +225,7 @@ namespace Labb3Bordsbokning
 
             LB_Bokningar.Items.Clear();
 
-            MessageBox.Show("Din bokning är nu raderat.");
+            MessageBox.Show("Din bokning är nu raderat.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
             ClearFields();
 
             DisplayContent();
