@@ -83,6 +83,11 @@ namespace Labb3Bordsbokning
             //Lägg till bokningen i en lista
             sparadeBokningarLista.Add(resultBokning);
 
+            string outputString = resultBokning.dag.datum.ToString() + ", " + resultBokning.dag.tid + ", " + resultBokning.bord.namn + ", Bord " + resultBokning.bord.nummer;
+
+            //Skicka in outputsträngen till klassen för filhantering
+            Filhantering filhantering = new Filhantering();
+            filhantering.SaveBokingsToFile(outputString);
         }
 
         /// <summary>
@@ -123,7 +128,7 @@ namespace Labb3Bordsbokning
                 string outputTid = bokning.dag.tid.ToString();
                 string outputBord = bokning.bord.nummer.ToString();
                 string outputNamn = bokning.bord.namn.ToString();
-
+                
                 LB_Bokningar.Items.Add(outputDatum + ", " + outputTid + ", " + outputNamn + ", Bord " + outputBord);
             }
 
