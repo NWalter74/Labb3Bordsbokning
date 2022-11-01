@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Printing;
 using System.Security.Cryptography;
@@ -31,9 +32,7 @@ namespace Labb3Bordsbokning
         //En lista för alla sparade bokningar
         public List<Bokning> sparadeBokningarLista = new List<Bokning>();
 
-        //TODO: har jag med iteration och selektion? krav 11 och 12 G
         //TODO: endast 5 bord ska tillåtas vara bokade samma datum och tid krav 13 VG
-        //TODO: abstrakta klasser eller interface krav 15 VG
         //TODO: Filhantering uppdatera fil vid bokning och avbokning samt läsa från fil vid valet ”Visa bokningar” krav 16 VG
         //TODO: Asyncrona metoder krav 17 VG
 
@@ -103,6 +102,12 @@ namespace Labb3Bordsbokning
             var result = sparadeBokningarLista.Where(item => item.dag.datum == listboxDatum && item.dag.tid == listboxTid && item.bord.namn == listboxNamn && item.bord.nummer == listBoxBordNummer).First();
 
             sparadeBokningarLista.Remove(result);
+
+            string deleteString = result.dag.datum.ToString() + ", " + result.dag.tid + ", " + result.bord.namn + ", Bord " + result.bord.nummer;
+
+            //Skicka in outputsträngen till klassen för filhantering
+            Filhantering filhantering = new Filhantering();
+            filhantering.DeleteBokingFromFile(deleteString);
         }
 
         /// <summary>
