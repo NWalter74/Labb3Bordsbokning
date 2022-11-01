@@ -7,13 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 using System.Windows;
+using System.Text.RegularExpressions;
 
 namespace Labb3Bordsbokning
 {
     public class Filhantering
     {
-        List<string> sortedOutputStringList = new List<string>();
-
         public void SaveBokingsToFile(string outputString)
         {
             if (File.Exists("FilMedAllaBokningar.txt"))
@@ -33,14 +32,7 @@ namespace Labb3Bordsbokning
                     if (!isMatch)
                     {
                         sr.Close();
-                        sortedOutputStringList.Add(outputString);
-                        sortedOutputStringList.Sort();
-
-                        foreach(string s in sortedOutputStringList)
-                        {
-                            File.AppendAllText("FilMedAllaBokningar.txt", s + "\n");
-                        }
-                        
+                        File.AppendAllText("FilMedAllaBokningar.txt", outputString + "\n");
                     }
                 }
             }
@@ -87,6 +79,12 @@ namespace Labb3Bordsbokning
             {
                 MessageBox.Show("OBS! Något gick fel. Filen verkar inte finnas eller används av ett annat program!", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        public string[] ReadAllBokingsFromFile()
+        {
+            string[] lines = File.ReadAllLines("FilMedAllaBokningar.txt");
+            return lines;
         }
     }
 }

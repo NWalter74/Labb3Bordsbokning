@@ -127,14 +127,21 @@ namespace Labb3Bordsbokning
         private void DisplayContent()
         {
             //Krav[11]
-            foreach (var bokning in sparadeBokningarLista)
+            //foreach (var bokning in sparadeBokningarLista)
+            //{
+            //string outputDatum = bokning.dag.datum.ToString();
+            //string outputTid = bokning.dag.tid.ToString();
+            //string outputBord = bokning.bord.nummer.ToString();
+            //string outputNamn = bokning.bord.namn.ToString();
+
+            //LB_Bokningar.Items.Add(outputDatum + ", " + outputTid + ", " + outputNamn + ", Bord " + outputBord);
+            //}
+
+            Filhantering filhantering = new Filhantering();
+
+            foreach (var item in (filhantering.ReadAllBokingsFromFile()))
             {
-                string outputDatum = bokning.dag.datum.ToString();
-                string outputTid = bokning.dag.tid.ToString();
-                string outputBord = bokning.bord.nummer.ToString();
-                string outputNamn = bokning.bord.namn.ToString();
-                
-                LB_Bokningar.Items.Add(outputDatum + ", " + outputTid + ", " + outputNamn + ", Bord " + outputBord);
+                LB_Bokningar.Items.Add(item);
             }
 
         }
@@ -160,7 +167,7 @@ namespace Labb3Bordsbokning
                 inputBordNummer = int.Parse(CBox_Table.Text);
 
                 //Krav[7]
-                //TODO: Varför funkar inte regex här
+                //TODO: Varför funkar inte regex här? :-(
                 //if (!Regex.Match(TBox_Name.Text, "^[A-Z][a-zA-Z]*$").Success)
                 //{
                 //    //name was incorrect
