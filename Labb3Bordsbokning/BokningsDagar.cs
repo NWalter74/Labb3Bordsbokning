@@ -19,17 +19,12 @@ namespace Labb3Bordsbokning
             this.tid = kundTid;
         }
 
-        //private void CancelThisDay(string listboxDatum, string listboxTid)
-        //{
-        //    //Krav[14]
-        //    var result = listaAvBokadeDagar.Where(item => item.datum == listboxDatum && item.tid == listboxTid);
-
-        //    if (result != null)
-        //    {
-        //        listaAvBokadeDagar.Remove(result.First());
-        //    }
-        //}
-
+        /// <summary>
+        /// Sparar en dag som består av en tid och ett datum
+        /// </summary>
+        /// <param name="kundDatum"></param>
+        /// <param name="kundTid"></param>
+        /// <returns></returns>
         public Dag SaveThisBokingDay(string kundDatum, string kundTid)
         {
             Dag dag = new Dag();
@@ -38,7 +33,6 @@ namespace Labb3Bordsbokning
 
             listaAvBokadeDagar.Add(dag);
             return dag;
-
         }
 
         public struct Dag

@@ -116,7 +116,8 @@ namespace Labb3Bordsbokning
         /// </summary>
         private void DisplayContent()
         {
-            foreach(var bokning in sparadeBokningarLista)
+            //Krav[11]
+            foreach (var bokning in sparadeBokningarLista)
             {
                 string outputDatum = bokning.dag.datum.ToString();
                 string outputTid = bokning.dag.tid.ToString();

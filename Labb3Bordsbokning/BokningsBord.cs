@@ -20,17 +20,12 @@ namespace Labb3Bordsbokning
             this.kundNamn = kundNamn;
         }
 
-        //private void CancelThisBord(string listboxNamn, int listboxBordNummer)
-        //{
-        //    //Krav[14]
-        //    var result = listaAvBokadeBord.Where(item => item.namn == listboxNamn && item.nummer == listboxBordNummer);
-            
-        //    if (result != null)
-        //    {
-        //        listaAvBokadeBord.Remove(result.First());
-        //    }
-        //}
-
+        /// <summary>
+        /// Sparar ett bord som består av ett namn och en nummer
+        /// </summary>
+        /// <param name="kundBordNo"></param>
+        /// <param name="kundNamn"></param>
+        /// <returns></returns>
         public Bord SaveThisTable(int kundBordNo, string kundNamn)
         {
             Bord bord = new Bord();
