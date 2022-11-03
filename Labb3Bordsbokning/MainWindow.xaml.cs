@@ -42,11 +42,13 @@ namespace Labb3Bordsbokning
             CBox_Time.ItemsSource = comboTimeLista;
             CBox_Table.ItemsSource = comboBordLista;
 
-            //Skapa exempeldata
-            //Krav[6]
-            DoTheBoking("2022-10-14", "17:00", 1, "Kalle");
-            DoTheBoking("2022-10-22", "16:00", 4, "Inez");
-            DoTheBoking("2022-10-30", "18:00", 10, "Otto");
+            //Skapa exempeldata bara om inte filen redan finns. Annars läggs data in dubbelt
+            if (!File.Exists("FilMedAllaBokningar.txt"))
+            {
+                DoTheBoking("2022-10-14", "17:00", 1, "Kalle");
+                DoTheBoking("2022-10-22", "16:00", 4, "Inez");
+                DoTheBoking("2022-10-30", "18:00", 10, "Otto");
+            }
 
             DisplayContent();
 
@@ -95,12 +97,7 @@ namespace Labb3Bordsbokning
         /// <param name="listBoxBordNummer"></param>
         private void CancelTheBoking(string listboxDatum, string listboxTid, string listboxNamn, int listBoxBordNummer)
         {
-            //Krav[14]
-            var result = sparadeBokningarLista.Where(item => item.dag.datum == listboxDatum && item.dag.tid == listboxTid && item.bord.namn == listboxNamn && item.bord.nummer == listBoxBordNummer).First();
-
-            sparadeBokningarLista.Remove(result);
-
-            string deleteString = result.dag.datum.ToString() + ", " + result.dag.tid + ", " + result.bord.namn + ", Bord " + result.bord.nummer;
+            string deleteString = listboxDatum + ", " + listboxTid + ", " + listboxNamn + ", Bord " + listBoxBordNummer;
 
             //Skicka in outputsträngen till klassen för filhantering
             Filhantering filhantering = new Filhantering();
@@ -123,27 +120,12 @@ namespace Labb3Bordsbokning
         /// </summary>
         private void DisplayContent()
         {
-            //Krav[11]
-            //Lösning innan jag började med VG kraven
-
-            //foreach (var bokning in sparadeBokningarLista)
-            //{
-            //string outputDatum = bokning.dag.datum.ToString();
-            //string outputTid = bokning.dag.tid.ToString();
-            //string outputBord = bokning.bord.nummer.ToString();
-            //string outputNamn = bokning.bord.namn.ToString();
-
-            //LB_Bokningar.Items.Add(outputDatum + ", " + outputTid + ", " + outputNamn + ", Bord " + outputBord);
-            //}
-
-            //Krav [16]
             Filhantering filhantering = new Filhantering();
 
             foreach (var item in (filhantering.ReadAllBokingsFromFile()))
             {
                 LB_Bokningar.Items.Add(item);
             }
-
         }
 
         /// <summary>
@@ -153,20 +135,17 @@ namespace Labb3Bordsbokning
         /// <param name="e"></param>
         private void Button_Click_SaveBoking(object sender, RoutedEventArgs e)
         {
-            //Krav [1]
             string inputDatum = "";
             string inputTid = "";
             int inputBordNummer = 0;
             string inputNamn = "";
 
-            //Krav[7] och [8]
             try
             {
                 inputDatum = MyDatePicker.SelectedDate.Value.ToShortDateString().ToString();
                 inputTid = CBox_Time.Text;
                 inputBordNummer = int.Parse(CBox_Table.Text);
 
-                //Krav[7]
                 if (!Regex.IsMatch(TBox_Name.Text, @"^[\p{L}\p{M}' \.\-]+$"))
                 {
                     MessageBox.Show("Detta är inget namn. Vänligen mata in ett rikigt namn.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -174,7 +153,6 @@ namespace Labb3Bordsbokning
                 }
 
                 inputNamn = TBox_Name.Text;
-
                 bool ärBokat = false;
 
                 var antalBokningarSammaDagTid = sparadeBokningarLista.Where(item => item.dag.datum == inputDatum && item.dag.tid == inputTid).Count();
@@ -185,7 +163,6 @@ namespace Labb3Bordsbokning
                     return;
                 }
 
-                //Krav[11]
                 foreach (var bokning in sparadeBokningarLista)
                 {
                     if (bokning.dag.datum == inputDatum && bokning.dag.tid == inputTid && bokning.bord.nummer == inputBordNummer)
@@ -194,7 +171,6 @@ namespace Labb3Bordsbokning
                     }
                 }
 
-                //Krav [2] och [3]
                 if (ärBokat == true)
                 {
                     MessageBox.Show("Denna dag och tid är detta bord redan bokat.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -202,8 +178,6 @@ namespace Labb3Bordsbokning
                 else
                 {
                     DoTheBoking(inputDatum, inputTid, inputBordNummer, inputNamn);
-
-                    //TODO: abfragen ob ismatch true or false
 
                     MessageBox.Show("Din bokning är nu sparat.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -221,8 +195,6 @@ namespace Labb3Bordsbokning
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        
-        // Krav[4]
         private void Button_Click_ShowBokings(object sender, RoutedEventArgs e)
         {
             LB_Bokningar.Items.Clear();
@@ -236,8 +208,6 @@ namespace Labb3Bordsbokning
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-
-        // Krav[5]
         private void Button_Click_CancelBoking(object sender, RoutedEventArgs e)
         {
             if (LB_Bokningar.SelectedItem != null)
