@@ -136,27 +136,13 @@ namespace Labb3Bordsbokning
 
                 Filhantering filhantering = new Filhantering();
 
-                foreach (var item in (filhantering.ReadAllBokingsFromFile()))
-                {
-                    string[] result = item.ToString().Split(',');
+                HjälpKlass hjälpKlass = new HjälpKlass(filhantering.ReadAllBokingsFromFile());
 
-                    string Datum = result[0].Trim();
-                    string Tid = result[1].Trim();
-                    string Namn = result[2].Trim();
-                    int BordNummer = int.Parse(result[3].Substring(5).Trim());
+                ärBokat = hjälpKlass.bokingRecordsList.Where(item => item.datum == inputDatum && item.tid == inputTid && item.nummer == inputBordNummer).Count()>0;
 
-                    if(Datum == inputDatum && Tid == inputTid && BordNummer == inputBordNummer)
-                    {
-                        ärBokat = true;
-                    }
-
-                    if(Datum == inputDatum && Tid == inputTid)
-                    {
-                        counter++;
-                    }
-                }
-
-                if (counter > 4)
+                bool ärFlerÄnFem = hjälpKlass.bokingRecordsList.Where(item => item.datum == inputDatum && item.tid == inputTid).Count() > 4;
+                
+                if(ärFlerÄnFem == true)
                 {
                     MessageBox.Show("Denna dag och tid finns redan för många bokningar.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
