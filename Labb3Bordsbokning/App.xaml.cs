@@ -24,12 +24,10 @@ namespace Labb3Bordsbokning
     {
         public void App_Exit(object sender, ExitEventArgs e)
         {
-                if (e.ApplicationExitCode == (int)ApplicationExitCode.Success)
-                {
-                //File.Delete("FilMedAllaBokningar.txt");
-
+            if (e.ApplicationExitCode == (int)ApplicationExitCode.Success)
+            {
                 MessageBox.Show("Tack att du testade min applikation.\nHoppas du tyckte om den.\nHa en fin dag!", "Hejdå och Tack!", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
+            }
         }
     }
 }

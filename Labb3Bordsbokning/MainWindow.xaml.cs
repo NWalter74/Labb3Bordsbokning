@@ -17,8 +17,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
-using static Labb3Bordsbokning.Bokningar;
-using static Labb3Bordsbokning.BokningsBord;
 
 namespace Labb3Bordsbokning
 {
@@ -29,9 +27,6 @@ namespace Labb3Bordsbokning
     {
         private List<string> comboTimeLista = new List<string>() { "Välj en tid...", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00" };
         private List<string> comboBordLista = new List<string>() { "Välj ett bord...", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
-
-        //En lista för alla sparade bokningar
-        public List<Bokning> sparadeBokningarLista = new List<Bokning>();
 
         public MainWindow()
         {
@@ -63,25 +58,8 @@ namespace Labb3Bordsbokning
         /// <param name="inputNamn"></param>
         private void DoTheBoking(string inputDatum, string inputTid, int inputBordNummer, string inputNamn)
         {
-            BokningsDagar dag = new BokningsDagar(inputDatum, inputTid);
 
-            //Skicka in datum och tid användaren valde i dialogen till klassen Dag för att spara denna dag med sin tid i en lista
-            BokningsDagar.Dag resultDag = dag.SaveThisBokingDay(inputDatum, inputTid);
-
-            BokningsBord bord = new BokningsBord(inputBordNummer, inputNamn);
-
-            //Skicka in bordnummer och namn användaren valde i dialogen till klassen Bord för att spara detta bord med sitt nummer och kundens namn i en lista
-            BokningsBord.Bord resultBord = bord.SaveThisTable(inputBordNummer, inputNamn);
-
-            Bokningar bokningar = new Bokningar(resultDag, resultBord);
-
-            //Skicka dag och bord till klassen Bokningar
-            Bokning resultBokning = bokningar.SaveBoking(resultDag, resultBord);
-
-            //Lägg till bokningen i en lista
-            sparadeBokningarLista.Add(resultBokning);
-
-            string outputString = resultBokning.dag.datum.ToString() + ", " + resultBokning.dag.tid + ", " + resultBokning.bord.namn + ", Bord " + resultBokning.bord.nummer;
+            string outputString = inputDatum.ToString() + ", " + inputTid + ", " + inputNamn + ", Bord " + inputBordNummer;
 
             //Skicka in outputsträngen till klassen för filhantering
             Filhantering filhantering = new Filhantering();
@@ -146,7 +124,7 @@ namespace Labb3Bordsbokning
                 inputTid = CBox_Time.Text;
                 inputBordNummer = int.Parse(CBox_Table.Text);
 
-                if (!Regex.IsMatch(TBox_Name.Text, @"^[\p{L}\p{M}' \.\-]+$"))
+                if ((!Regex.IsMatch(TBox_Name.Text, @"^[\p{L}\p{M}' \.\-]+$")) || String.IsNullOrWhiteSpace(TBox_Name.Text))
                 {
                     MessageBox.Show("Detta är inget namn. Vänligen mata in ett rikigt namn.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -154,21 +132,35 @@ namespace Labb3Bordsbokning
 
                 inputNamn = TBox_Name.Text;
                 bool ärBokat = false;
+                int counter = 0;
 
-                var antalBokningarSammaDagTid = sparadeBokningarLista.Where(item => item.dag.datum == inputDatum && item.dag.tid == inputTid).Count();
+                Filhantering filhantering = new Filhantering();
 
-                if (antalBokningarSammaDagTid > 4)
+                foreach (var item in (filhantering.ReadAllBokingsFromFile()))
                 {
-                    MessageBox.Show("Denna dag och tid finns redan för många bokningar.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+                    string[] result = item.ToString().Split(',');
 
-                foreach (var bokning in sparadeBokningarLista)
-                {
-                    if (bokning.dag.datum == inputDatum && bokning.dag.tid == inputTid && bokning.bord.nummer == inputBordNummer)
+                    string Datum = result[0].Trim();
+                    string Tid = result[1].Trim();
+                    string Namn = result[2].Trim();
+                    int BordNummer = int.Parse(result[3].Substring(5).Trim());
+
+                    if(Datum == inputDatum && Tid == inputTid && BordNummer == inputBordNummer)
                     {
                         ärBokat = true;
                     }
+
+                    if(Datum == inputDatum && Tid == inputTid)
+                    {
+                        counter++;
+                    }
+                }
+
+                if (counter > 4)
+                {
+                    MessageBox.Show("Denna dag och tid finns redan för många bokningar.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+
                 }
 
                 if (ärBokat == true)

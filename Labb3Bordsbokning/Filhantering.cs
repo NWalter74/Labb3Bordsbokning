@@ -11,7 +11,6 @@ using System.Text.RegularExpressions;
 
 namespace Labb3Bordsbokning
 {
-    //Krav [16]
     public class Filhantering
     {
         public void SaveBokingsToFile(string outputString)
