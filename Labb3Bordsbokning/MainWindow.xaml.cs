@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 using static Labb3Bordsbokning.Bokningar;
 using static Labb3Bordsbokning.BokningsBord;
 
@@ -31,10 +32,6 @@ namespace Labb3Bordsbokning
 
         //En lista för alla sparade bokningar
         public List<Bokning> sparadeBokningarLista = new List<Bokning>();
-
-        //TODO: endast 5 bord ska tillåtas vara bokade samma datum och tid krav 13 VG
-        //TODO: Filhantering uppdatera fil vid bokning och avbokning samt läsa från fil vid valet ”Visa bokningar” krav 16 VG
-        //TODO: Asyncrona metoder krav 17 VG
 
         public MainWindow()
         {
@@ -127,6 +124,8 @@ namespace Labb3Bordsbokning
         private void DisplayContent()
         {
             //Krav[11]
+            //Lösning innan jag började med VG kraven
+
             //foreach (var bokning in sparadeBokningarLista)
             //{
             //string outputDatum = bokning.dag.datum.ToString();
@@ -137,6 +136,7 @@ namespace Labb3Bordsbokning
             //LB_Bokningar.Items.Add(outputDatum + ", " + outputTid + ", " + outputNamn + ", Bord " + outputBord);
             //}
 
+            //Krav [16]
             Filhantering filhantering = new Filhantering();
 
             foreach (var item in (filhantering.ReadAllBokingsFromFile()))
@@ -167,22 +167,28 @@ namespace Labb3Bordsbokning
                 inputBordNummer = int.Parse(CBox_Table.Text);
 
                 //Krav[7]
-                //TODO: Varför funkar inte regex här? :-(
-                //if (!Regex.Match(TBox_Name.Text, "^[A-Z][a-zA-Z]*$").Success)
-                //{
-                //    //name was incorrect
-                //    MessageBox.Show("Detta är inget namn. Vänligen mata in ett rikigt namn.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
-                //    return;
-                //}
+                if (!Regex.IsMatch(TBox_Name.Text, @"^[\p{L}\p{M}' \.\-]+$"))
+                {
+                    MessageBox.Show("Detta är inget namn. Vänligen mata in ett rikigt namn.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
                 inputNamn = TBox_Name.Text;
 
                 bool ärBokat = false;
 
-                //Krav[11]
-                foreach(var bokning in sparadeBokningarLista)
+                var antalBokningarSammaDagTid = sparadeBokningarLista.Where(item => item.dag.datum == inputDatum && item.dag.tid == inputTid).Count();
+
+                if (antalBokningarSammaDagTid > 4)
                 {
-                    if(bokning.dag.datum == inputDatum && bokning.dag.tid == inputTid && bokning.bord.nummer == inputBordNummer)
+                    MessageBox.Show("Denna dag och tid finns redan för många bokningar.", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                //Krav[11]
+                foreach (var bokning in sparadeBokningarLista)
+                {
+                    if (bokning.dag.datum == inputDatum && bokning.dag.tid == inputTid && bokning.bord.nummer == inputBordNummer)
                     {
                         ärBokat = true;
                     }
@@ -197,6 +203,8 @@ namespace Labb3Bordsbokning
                 {
                     DoTheBoking(inputDatum, inputTid, inputBordNummer, inputNamn);
 
+                    //TODO: abfragen ob ismatch true or false
+
                     MessageBox.Show("Din bokning är nu sparat.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     ClearFields();
@@ -205,7 +213,7 @@ namespace Labb3Bordsbokning
             catch (Exception ex)
             {
                 MessageBox.Show("OBS! Något gick fel. Vänligen kontrollera dina inmatningar!", "OBS!", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            } 
         }
 
         /// <summary>
@@ -232,21 +240,24 @@ namespace Labb3Bordsbokning
         // Krav[5]
         private void Button_Click_CancelBoking(object sender, RoutedEventArgs e)
         {
-            var result = LB_Bokningar.SelectedItem.ToString().Split(',');
+            if (LB_Bokningar.SelectedItem != null)
+            {
+                var result = LB_Bokningar.SelectedItem.ToString().Split(',');
 
-            string listboxDatum = result[0].Trim();
-            string listboxTid = result[1].Trim();
-            string listboxNamn = result[2].Trim();
-            int listBoxBordNummer = int.Parse(result[3].Substring(5).Trim());
+                string listboxDatum = result[0].Trim();
+                string listboxTid = result[1].Trim();
+                string listboxNamn = result[2].Trim();
+                int listBoxBordNummer = int.Parse(result[3].Substring(5).Trim());
 
-            CancelTheBoking(listboxDatum, listboxTid, listboxNamn, listBoxBordNummer);
+                CancelTheBoking(listboxDatum, listboxTid, listboxNamn, listBoxBordNummer);
 
-            LB_Bokningar.Items.Clear();
+                LB_Bokningar.Items.Clear();
 
-            MessageBox.Show("Din bokning är nu raderat.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-            ClearFields();
+                MessageBox.Show("Din bokning är nu raderat.", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+                ClearFields();
 
-            DisplayContent();
+                DisplayContent();
+            }
         }
     }
 }
